@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 export const alt =
@@ -5,7 +7,10 @@ export const alt =
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpenGraphImage() {
+export default async function OpenGraphImage() {
+  const logo = `data:image/png;base64,${(
+    await readFile(join(process.cwd(), "public/images/logo-mark.png"))
+  ).toString("base64")}`;
   return new ImageResponse(
     <div
       style={{
@@ -27,7 +32,10 @@ export default function OpenGraphImage() {
           letterSpacing: 3,
         }}
       >
-        <span style={{ color: "#f5d633", fontWeight: 700 }}>NEELKANTH GYM</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 18, color: "#f5d633", fontWeight: 700 }}>
+          <img src={logo} width={64} height={64} style={{ borderRadius: 32 }} alt="" />
+          NEELKANTH GYM
+        </span>
         <span style={{ fontSize: 17, color: "#aaa99e" }}>
           LAXMI NAGAR · DELHI
         </span>

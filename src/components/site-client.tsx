@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   ArrowLeft,
+  CalendarDays,
+  Clock,
   UserRound,
   ArrowRight,
   ArrowUpRight,
@@ -26,19 +28,9 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import { inquiry, programs, branches, trainersByBranch } from "@/lib/gym";
-import { Brand, wrap } from "@/components/ui";
+import { branches, inquiry, navLinks as nav, programs, scheduleByBranch, trainersByBranch } from "@/lib/gym";
+import { Brand, Button, wrap } from "@/components/ui";
 
-const nav = [
-  { label: "Home", href: "#home" },
-  { label: "The club", href: "#the-club" },
-  { label: "Programs", href: "#programs" },
-  { label: "Our trainers", href: "#trainers" },
-  { label: "Member app", href: "#member-app" },
-  { label: "Reviews", href: "#reviews" },
-  { label: "FAQs", href: "#faqs" },
-  { label: "Visit us", href: "#visit" },
-];
 const subscribeTheme = (callback: () => void) => {
   const onStorage = (event: StorageEvent) => {
     if (event.key === "neelkanth-theme") {
@@ -124,13 +116,13 @@ export function Header() {
       className="sticky top-0 z-50 border-b border-line bg-background/85 backdrop-blur-2xl"
     >
       <div
-        className={`${wrap} flex h-16 items-center justify-between gap-3 xl:h-18 xl:gap-5`}
+        className={`${wrap} flex h-20 items-center justify-between gap-3 sm:h-[5.5rem] xl:gap-5`}
       >
         <Brand />
         <nav
           id="main-navigation"
           aria-label="Main navigation"
-          className={`${menuOpen ? "flex" : "hidden"} absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] flex-col gap-1 overflow-y-auto border-b border-line bg-background p-4 xl:static xl:flex xl:max-h-none xl:flex-row xl:items-center xl:gap-1 xl:overflow-visible xl:border-0 xl:bg-transparent xl:p-0`}
+          className={`${menuOpen ? "flex" : "hidden"} absolute inset-x-0 top-full max-h-[calc(100dvh-5rem)] flex-col gap-1 overflow-y-auto border-b border-line bg-background p-4 xl:static xl:flex xl:max-h-none xl:flex-row xl:items-center xl:gap-1 xl:overflow-visible xl:border-0 xl:bg-transparent xl:p-0`}
         >
           {nav.map((item) => (
             <a
@@ -799,6 +791,22 @@ export function BranchMap() {
   );
 }
 
+function useInView<T extends Element>(threshold = 0.35) {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return [ref, inView] as const;
+}
+
 export function TrainerGrid() {
   const [active, setActive] = useState(0);
   const branch = branches[active];
@@ -806,22 +814,41 @@ export function TrainerGrid() {
   const scroller = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(0);
   const [stops, setStops] = useState(1);
+  const [loop, setLoop] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [rootRef, inView] = useInView<HTMLDivElement>();
+  const count = trainers.length;
   const step = () => {
     const el = scroller.current;
     const first = el?.children[0] as HTMLElement | undefined;
     const second = el?.children[1] as HTMLElement | undefined;
     return first && second ? second.offsetLeft - first.offsetLeft : (first?.offsetWidth ?? 1);
   };
+  const current = () => Math.round((scroller.current?.scrollLeft ?? 0) / step());
   const goTo = (i: number) =>
     scroller.current?.scrollTo({ left: i * step(), behavior: "smooth" });
-  const slide = (dir: number) => goTo(Math.max(0, Math.min(stops - 1, pos + dir)));
+  const slide = (dir: number) => {
+    const el = scroller.current;
+    if (!el) return;
+    if (loop && dir < 0 && current() === 0) {
+      el.scrollLeft = count * step();
+      requestAnimationFrame(() => goTo(count - 1));
+      return;
+    }
+    goTo(Math.max(0, Math.min(stops - 1, current() + dir)));
+  };
   useEffect(() => {
     const el = scroller.current;
     if (!el) return;
     const measure = () => {
-      setStops(Math.max(1, Math.round((el.scrollWidth - el.clientWidth) / step()) + 1));
-      setPos(Math.round(el.scrollLeft / step()));
+      const s = step();
+      const isLoop = count > Math.max(1, Math.round(el.clientWidth / s));
+      if (isLoop && el.scrollLeft >= count * s - 1) el.scrollLeft -= count * s;
+      setLoop(isLoop);
+      setStops(
+        isLoop ? count : Math.max(1, Math.round((el.scrollWidth - el.clientWidth) / s) + 1),
+      );
+      setPos(isLoop ? current() % count : current());
     };
     measure();
     el.addEventListener("scroll", measure, { passive: true });
@@ -830,15 +857,16 @@ export function TrainerGrid() {
       el.removeEventListener("scroll", measure);
       window.removeEventListener("resize", measure);
     };
-  }, [branch.id]);
+  }, [branch.id, count]);
   useEffect(() => {
-    if (paused || stops < 2) return;
+    if (paused || !inView || !loop) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => goTo(pos + 1 >= stops ? 0 : pos + 1), 3500);
+    const id = setInterval(() => goTo(current() + 1), 3500);
     return () => clearInterval(id);
-  }, [paused, stops, pos]);
+  }, [paused, inView, loop]);
   return (
     <div
+      ref={rootRef}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -868,9 +896,31 @@ export function TrainerGrid() {
         </div>
       </div>
       <div ref={scroller} key={branch.id} className="-mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2 [scrollbar-width:none] lg:gap-6 [&::-webkit-scrollbar]:hidden">
-        {trainers.map(({ name, role }, index) => (
-          <article className="group w-[calc(50%-0.5rem)] shrink-0 snap-start lg:w-[calc(25%-1.125rem)]" key={name}>
-            <div className="glass relative isolate h-60 overflow-hidden rounded-2xl sm:h-80">
+        {(loop ? [...trainers, ...trainers] : trainers).map(({ name, role, photo }, i) => {
+          const index = i % count;
+          return (
+          <article
+            className="group w-[calc(50%-0.5rem)] shrink-0 snap-start lg:w-[calc(25%-1.125rem)]"
+            key={`${name}-${i}`}
+            aria-hidden={i >= count || undefined}
+          >
+            <div className="glass relative isolate h-72 overflow-hidden rounded-2xl sm:h-[26rem] lg:h-[28rem]">
+              {photo ? (
+                <>
+                  <Image
+                    src={photo}
+                    alt={`${name}, ${role ?? "Neelkanth trainer"}`}
+                    fill
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/30" />
+                  <span className="absolute top-5 left-5 text-xs font-medium tracking-wider text-white/80 sm:text-sm">
+                    COACH / 0{index + 1}
+                  </span>
+                </>
+              ) : (
+                <>
               <span className="absolute top-5 left-5 text-xs font-medium tracking-wider text-muted sm:text-sm">
                 COACH / 0{index + 1}
               </span>
@@ -889,6 +939,8 @@ export function TrainerGrid() {
               <span className="absolute bottom-4 left-4 text-[10px] text-muted sm:left-5 sm:text-xs">
                 Portrait coming soon
               </span>
+                </>
+              )}
               <a
                 href={inquiry(
                   `Hi Neelkanth Gym! I’d like to ask about training with ${name} at the ${branch.name} branch.`,
@@ -904,7 +956,8 @@ export function TrainerGrid() {
             <h3 className="mt-4 text-2xl font-semibold tracking-tight">{name}</h3>
             <p className="mt-1 text-sm text-muted">{role ?? "Neelkanth trainer"}</p>
           </article>
-        ))}
+          );
+        })}
       </div>
       {stops > 1 && (
         <div className="mt-5 flex justify-center gap-2" aria-label="Coach carousel position">
@@ -919,6 +972,69 @@ export function TrainerGrid() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+export function ScheduleTabs() {
+  const [active, setActive] = useState(0);
+  const branch = branches[active];
+  const slots = scheduleByBranch[branch.id] ?? [];
+  return (
+    <div>
+      <div className="mb-8 flex flex-wrap items-center gap-3" role="tablist" aria-label="Schedule branch">
+        {branches.map((b, i) => (
+          <button
+            key={b.id}
+            role="tab"
+            aria-selected={i === active}
+            onClick={() => setActive(i)}
+            className={`min-h-11 rounded-full border px-5 text-sm font-semibold transition ${i === active ? "border-accent bg-accent text-ink" : "border-line text-muted hover:text-foreground"}`}
+          >
+            {b.name}
+          </button>
+        ))}
+      </div>
+      <div key={branch.id} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        {slots.map((slot) => (
+          <article key={`${slot.title}-${slot.days}`} className="glass flex flex-col rounded-3xl p-6">
+            <div className="flex items-center justify-between gap-3 text-sm font-semibold">
+              <span className="inline-flex items-center gap-2 text-accent-ink">
+                <CalendarDays className="size-4" /> {slot.days}
+              </span>
+              <span className="inline-flex items-center gap-2 text-muted">
+                <Clock className="size-4" /> {slot.time}
+              </span>
+            </div>
+            <h3 className="mt-4 text-2xl font-semibold tracking-tight">{slot.title}</h3>
+            <p className="mt-1 text-sm text-muted">Coach: {slot.coach}</p>
+            {slot.note && (
+              <span className="mt-3 inline-flex w-fit rounded-full bg-accent px-3 py-1 text-xs font-bold text-ink">
+                {slot.note.toUpperCase()}
+              </span>
+            )}
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {slot.activities.map((a) => (
+                <li key={a} className="rounded-full border border-line px-3 py-1.5 text-xs font-medium text-foreground/85">
+                  {a}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+      <div className="mt-8 flex flex-wrap items-center gap-4">
+        <Button
+          href={inquiry(
+            `Hi Neelkanth Gym! I’d like to join a group class at the ${branch.name} branch. Could you share the details?`,
+          )}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Join a class
+        </Button>
+        <span className="text-sm text-muted">Train smart. Stay fit. Transform yourself.</span>
+      </div>
     </div>
   );
 }

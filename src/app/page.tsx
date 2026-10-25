@@ -4,7 +4,6 @@ import {
   ArrowUpRight,
   BarChart3,
   Dumbbell,
-  Flame,
   Heart,
   MapPin,
   MessageCircle,
@@ -12,16 +11,15 @@ import {
   Plus,
   ShieldCheck,
   Sparkles,
-  Star,
   Target,
   UserRound,
   Utensils,
   Zap,
 } from "lucide-react";
-import { BranchMap, Header, MemberApp, Motion, Programs, TrainerGrid } from "@/components/site-client";
+import { BranchMap, Header, MemberApp, Motion, Programs, ScheduleTabs, TrainerGrid } from "@/components/site-client";
+import { Footer } from "@/components/footer";
 import { Testimonials } from "@/components/testimonials";
 import {
-  Brand,
   Button,
   SectionLabel,
   heading,
@@ -108,7 +106,7 @@ export default function Home() {
         <section
           id="home"
           aria-labelledby="hero-title"
-          className="relative isolate flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden lg:h-[calc(100svh-4rem)] lg:min-h-[540px]"
+          className="relative isolate flex min-h-[calc(100svh-5rem)] flex-col sm:min-h-[calc(100svh-5.5rem)] overflow-hidden lg:h-[calc(100svh-5.5rem)] lg:min-h-[540px]"
         >
           <div className="hero-parallax absolute inset-0 -z-20">
             <Image
@@ -324,6 +322,25 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="schedule" className={`${wrap} pt-2 pb-16 lg:pb-20`}>
+          <div className="reveal mb-8 flex flex-col justify-between gap-5 lg:mb-10 lg:flex-row lg:items-end">
+            <div>
+              <SectionLabel number="03">GROUP CLASSES · BOTH BRANCHES</SectionLabel>
+              <h2 className={heading}>
+                SHOW UP.
+                <br />
+                <span className={`${serif} text-[0.85em]`}>we’ll lead.</span>
+              </h2>
+            </div>
+            <div className="max-w-sm">
+              <p className="text-base leading-relaxed text-muted lg:text-lg">
+                Weekly group fitness timetable. Pick your branch.
+              </p>
+            </div>
+          </div>
+          <ScheduleTabs />
+        </section>
+
         <section className={`${wrap} py-16 lg:py-14`}>
           <div className="reveal reveal-scale relative isolate min-h-[360px] lg:min-h-[380px] overflow-hidden rounded-3xl border border-white/25 p-7 shadow-[0_30px_80px_-20px_#000] sm:p-12 lg:p-12">
             <Image
@@ -366,7 +383,7 @@ export default function Home() {
         <section id="trainers" className={`${wrap} pt-2 pb-16 lg:pb-20`}>
           <div className="reveal mb-10 flex flex-col justify-between gap-6 lg:mb-12 lg:flex-row lg:items-end">
             <div>
-              <SectionLabel number="03">
+              <SectionLabel number="04">
                 THE PEOPLE BEHIND YOUR PROGRESS
               </SectionLabel>
               <h2 className={heading}>
@@ -435,7 +452,7 @@ export default function Home() {
             className={`${wrap} grid items-center gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20`}
           >
             <div className="reveal reveal-slide-l">
-              <SectionLabel number="04">YOUR GYM. IN YOUR POCKET.</SectionLabel>
+              <SectionLabel number="05">YOUR GYM. IN YOUR POCKET.</SectionLabel>
               <h2 className={heading}>
                 TRAIN SMARTER.
                 <br />
@@ -505,23 +522,13 @@ export default function Home() {
           <div className={wrap}>
             <div className="reveal mb-12 flex flex-col items-start justify-between gap-6 lg:mb-16 lg:flex-row lg:items-end">
               <div>
-                <SectionLabel number="05">REAL WORDS FROM REAL MEMBERS</SectionLabel>
+                <SectionLabel number="06">REAL WORDS FROM REAL MEMBERS</SectionLabel>
                 <h2 className={heading}>
                   LOVED ON
                   <br />
                   <span className={`${serif} text-[0.85em]`}>google.</span>
                 </h2>
               </div>
-              <a
-                href={mapLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass inline-flex min-h-13 items-center gap-3 rounded-full px-6 text-sm font-semibold transition hover:-translate-y-1"
-              >
-                <Star className="size-5 text-accent" fill="currentColor" />
-                Read all reviews on Google
-                <ArrowUpRight className="size-4" />
-              </a>
             </div>
             <div className="reveal">
               <Testimonials />
@@ -534,7 +541,7 @@ export default function Home() {
           className={`${wrap} ${sectionSpace} grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20`}
         >
           <div className="reveal">
-            <SectionLabel number="06">
+            <SectionLabel number="07">
               A LITTLE CLARITY BEFORE YOU START
             </SectionLabel>
             <h2 className={heading}>
@@ -588,7 +595,7 @@ export default function Home() {
             className={`${wrap} grid items-center gap-12 lg:grid-cols-2 lg:gap-20`}
           >
             <div className="reveal">
-              <SectionLabel number="07">
+              <SectionLabel number="08">
                 YOUR NEXT CHAPTER IS NEARBY
               </SectionLabel>
               <h2 className={heading}>
@@ -695,41 +702,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="glass border-x-0 border-b-0">
-        <div className={wrap}>
-          <div className="flex flex-wrap items-center justify-between gap-8 py-10 lg:py-14">
-            <Brand />
-            <p className="text-base leading-relaxed text-muted">
-              Built by you. Backed by us.
-              <br />
-              Your neighbourhood. Your gym.
-            </p>
-            <div>
-              <a
-                href="tel:+919810642646"
-                className="inline-flex items-center gap-3 text-lg font-semibold"
-              >
-                {phone}
-                <ArrowUpRight className="size-5" />
-              </a>
-              <p className="mt-2 text-sm text-muted">
-                M - 122, Near Jagat Ram Park, Laxmi Nagar
-              </p>
-            </div>
-            <a
-              href="#home"
-              aria-label="Back to top"
-              className="grid size-12 place-items-center rounded-full border border-line transition hover:bg-surface"
-            >
-              <ArrowUpRight className="size-5" />
-            </a>
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line py-6 pb-22 text-sm leading-relaxed text-muted sm:pb-6">
-            <span>© 2026 Neelkanth Gym. All rights reserved.</span>
-            <span>Owned by Rajat Kr Sharma.</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
       <a
         href={whatsapp}
         target="_blank"

@@ -2,24 +2,43 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Quote, Star } from "lucide-react";
-import { reviews } from "@/lib/gym";
+import { ArrowUpRight } from "lucide-react";
+import { branches, reviewsByBranch, type Review } from "@/lib/gym";
 
-export function Testimonials() {
+function useInView<T extends Element>(threshold = 0.35) {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return [ref, inView] as const;
+}
+
+function ReviewCarousel({ reviews }: { reviews: Review[] }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [rootRef, inView] = useInView<HTMLDivElement>();
   const drag = useRef<number | null>(null);
   const count = reviews.length;
   const go = (step: number) => setActive((i) => (i + step + count) % count);
 
   useEffect(() => {
-    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    if (paused || !inView || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
       return;
     const timer = setInterval(() => setActive((i) => (i + 1) % count), 5000);
     return () => clearInterval(timer);
-  }, [paused, count]);
+  }, [paused, inView, count]);
 
   return (
     <div
+      ref={rootRef}
       role="region"
       aria-roledescription="carousel"
       aria-label="Google reviews"
@@ -137,6 +156,39 @@ export function Testimonials() {
           <ArrowRight className="size-5" />
         </button>
       </div>
+    </div>
+  );
+}
+
+export function Testimonials() {
+  const [branchIndex, setBranchIndex] = useState(0);
+  const branch = branches[branchIndex];
+  return (
+    <div>
+      <div className="mb-10 flex flex-wrap items-center gap-3" role="tablist" aria-label="Reviews branch">
+        {branches.map((b, i) => (
+          <button
+            key={b.id}
+            role="tab"
+            aria-selected={i === branchIndex}
+            onClick={() => setBranchIndex(i)}
+            className={`min-h-11 rounded-full border px-5 text-sm font-semibold transition ${i === branchIndex ? "border-accent bg-accent text-ink" : "border-line text-muted hover:text-foreground"}`}
+          >
+            {b.name}
+          </button>
+        ))}
+        <a
+          href={branch.mapLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="glass ml-auto inline-flex min-h-11 items-center gap-3 rounded-full px-5 text-sm font-semibold transition hover:-translate-y-1"
+        >
+          <Star className="size-4 text-accent" fill="currentColor" />
+          Read all reviews on Google
+          <ArrowUpRight className="size-4" />
+        </a>
+      </div>
+      <ReviewCarousel key={branch.id} reviews={reviewsByBranch[branch.id] ?? []} />
     </div>
   );
 }
