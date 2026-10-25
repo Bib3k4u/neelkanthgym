@@ -900,11 +900,11 @@ export function TrainerGrid() {
           const index = i % count;
           return (
           <article
-            className="group w-[calc(50%-0.5rem)] shrink-0 snap-start lg:w-[calc(25%-1.125rem)]"
+            className="group w-full shrink-0 snap-start sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-1.125rem)]"
             key={`${name}-${i}`}
             aria-hidden={i >= count || undefined}
           >
-            <div className="glass relative isolate h-72 overflow-hidden rounded-2xl sm:h-[26rem] lg:h-[28rem]">
+            <div className="glass relative isolate h-[32rem] overflow-hidden rounded-2xl sm:h-[26rem] lg:h-[28rem]">
               {photo ? (
                 <>
                   <Image
@@ -914,7 +914,7 @@ export function TrainerGrid() {
                     sizes="(max-width: 1024px) 50vw, 25vw"
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/30" />
+                  <div className="absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-transparent" />
                   <span className="absolute top-5 left-5 text-xs font-medium tracking-wider text-white/80 sm:text-sm">
                     COACH / 0{index + 1}
                   </span>
@@ -936,11 +936,15 @@ export function TrainerGrid() {
                 strokeWidth={0.7}
                 aria-hidden="true"
               />
-              <span className="absolute bottom-4 left-4 text-[10px] text-muted sm:left-5 sm:text-xs">
+              <span className="absolute top-5 right-5 text-[10px] text-muted sm:text-xs">
                 Portrait coming soon
               </span>
                 </>
               )}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/55 to-transparent px-5 pt-20 pr-16 pb-5">
+                <h3 className="text-2xl leading-tight font-semibold tracking-tight text-accent">{name}</h3>
+                <p className="mt-1 text-sm leading-snug text-white">{role ?? "Neelkanth trainer"}</p>
+              </div>
               <a
                 href={inquiry(
                   `Hi Neelkanth Gym! I’d like to ask about training with ${name} at the ${branch.name} branch.`,
@@ -953,8 +957,6 @@ export function TrainerGrid() {
                 <ArrowUpRight className="size-5" />
               </a>
             </div>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight">{name}</h3>
-            <p className="mt-1 text-sm text-muted">{role ?? "Neelkanth trainer"}</p>
           </article>
           );
         })}
