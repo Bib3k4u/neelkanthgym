@@ -231,7 +231,12 @@ export const faqs = [
   {
     question: "Where are you located, and when can I visit?",
     answer:
-      "Find us at M - 122, Near Jagat Ram Park, Laxmi Nagar, New Delhi, Delhi 110092. Call or WhatsApp +91 98106 42646 to confirm current opening hours and arrange your visit.",
+      "We have two branches. Laxmi Nagar: M - 122, Near Jagat Ram Park, Laxmi Nagar, New Delhi, Delhi 110092. Madhu Vihar: C-7, Sai Chowk, Madhu Vihar Rd, near FITNEST GYM, Madhu Vihar, I.P. Extension, Patparganj, Delhi 110092. Call or WhatsApp +91 98106 42646 to confirm current opening hours and arrange your visit.",
+  },
+  {
+    question: "Do you have more than one branch?",
+    answer:
+      "Yes. Neelkanth Gym has two branches in Delhi, one in Laxmi Nagar near Jagat Ram Park and one in Madhu Vihar, Patparganj. Pick your branch in the schedule, trainers and reviews sections of this page.",
   },
 ];
 

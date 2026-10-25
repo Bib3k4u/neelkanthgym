@@ -31,7 +31,6 @@ import {
   faqs,
   inquiry,
   branches,
-  mapLink,
   phone,
   programs,
   ownerPhoto,
@@ -42,24 +41,39 @@ import {
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
-    {
+    ...[
+      {
+        branch: branches[0],
+        street: "M - 122, Near Jagat Ram Park, Laxmi Nagar",
+        locality: "Laxmi Nagar, Delhi",
+        geo: { "@type": "GeoCoordinates", latitude: 28.6349314, longitude: 77.2762768 },
+      },
+      {
+        branch: branches[1],
+        street: "C-7, Sai Chowk, Madhu Vihar Rd, near FITNEST GYM, Madhu Vihar, I.P. Extension, Patparganj",
+        locality: "Delhi",
+        geo: undefined,
+      },
+    ].map(({ branch, street, locality, geo }) => ({
       "@type": "HealthClub",
-      "@id": siteUrl ? `${siteUrl}/#gym` : "#gym",
-      name: "Neelkanth Gym",
-      description:
-        "Weight training, personal training, group training, fitness, yoga and Zumba in Laxmi Nagar, Delhi.",
+      "@id": siteUrl ? `${siteUrl}/#${branch.id}` : `#${branch.id}`,
+      name: `Neelkanth Gym ${branch.name}`,
+      alternateName: "Neelkanth Gym",
+      description: `Weight training, personal training, group training, yoga, Zumba and dance fitness at Neelkanth Gym, ${branch.name}, Delhi.`,
       telephone: phone,
-      ...(siteUrl ? { url: siteUrl } : {}),
+      ...(siteUrl ? { url: siteUrl, image: `${siteUrl}/opengraph-image` } : {}),
       founder: { "@type": "Person", name: "Rajat Kr Sharma" },
       address: {
         "@type": "PostalAddress",
-        streetAddress: "M - 122, Near Jagat Ram Park, Laxmi Nagar",
-        addressLocality: "Delhi",
+        streetAddress: street,
+        addressLocality: locality,
         addressRegion: "Delhi",
         postalCode: "110092",
         addressCountry: "IN",
       },
-      hasMap: mapLink,
+      ...(geo ? { geo } : {}),
+      hasMap: branch.mapLink,
+      areaServed: branch.name,
       hasOfferCatalog: {
         "@type": "OfferCatalog",
         name: "Training programs",
@@ -72,7 +86,7 @@ const structuredData = {
           },
         })),
       },
-    },
+    })),
     {
       "@type": "FAQPage",
       mainEntity: faqs.map((faq) => ({
