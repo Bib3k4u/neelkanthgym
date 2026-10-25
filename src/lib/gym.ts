@@ -24,11 +24,11 @@ export const branches = [
       "https://maps.google.com/maps?q=Neelkanth+Gym+C-7%2C+Sai+Chowk%2C+Madhu+Vihar+Rd%2C+near+FITNEST+GYM%2C+Madhu+Vihar%2C+I.P.Extension%2C+Patparganj%2C+Delhi%2C+110092&z=16&output=embed",
   },
 ];
-export type Trainer = { name: string; role?: string };
+export type Trainer = { name: string; role?: string; photo?: string };
 /** Coaches per branch (keyed by branch id). */
 export const trainersByBranch: Record<string, Trainer[]> = {
   "laxmi-nagar": [
-    { name: "Sam", role: "Senior Instructor In-charge" },
+    { name: "Sam", role: "Senior Instructor In-charge", photo: "/images/trainers/sam.webp" },
     { name: "Hemant", role: "Weight Training Instructor" },
     { name: "Rohit", role: "Weight Training Instructor" },
     { name: "Sachin", role: "Aerobic Instructor" },
@@ -40,6 +40,123 @@ export const trainersByBranch: Record<string, Trainer[]> = {
     { name: "Neeraj Saini" },
     { name: "Karan" },
   ],
+};
+export type ClassSlot = {
+  title: string;
+  days: string;
+  time: string;
+  coach: string;
+  note?: string;
+  activities: string[];
+};
+/** Group class timetable for the Laxmi Nagar branch. */
+export const laxmiNagarSchedule: ClassSlot[] = [
+  {
+    title: "Morning group fitness",
+    days: "Mon – Sat",
+    time: "7:30 – 8:30 AM",
+    coach: "Sam",
+    activities: ["Aerobic exercise", "HIIT cardio", "Group fitness training"],
+  },
+  {
+    title: "Ladies special batch",
+    days: "Mon – Sat",
+    time: "11:00 AM onwards",
+    coach: "Sam",
+    activities: [
+      "Aerobic exercise",
+      "HIIT cardio",
+      "Strength training",
+      "Stepper exercise",
+      "CrossFit",
+      "Circuit training",
+      "HYROX training",
+    ],
+  },
+  {
+    title: "Evening group fitness",
+    days: "Mon – Sat",
+    time: "Evening",
+    coach: "Sam",
+    note: "Tuesday off",
+    activities: [
+      "HIIT cardio group",
+      "Strength training",
+      "CrossFit",
+      "Circuit training",
+      "HYROX training",
+      "Stepper exercise",
+      "Full body workout",
+      "Dumbbell & barbell group exercise",
+    ],
+  },
+  {
+    title: "Evening Zumba",
+    days: "Mon & Fri",
+    time: "7:00 – 8:00 PM",
+    coach: "Anaya",
+    activities: ["Zumba", "Dance fitness", "Cardio"],
+  },
+  {
+    title: "Bollywood dance",
+    days: "Tuesday",
+    time: "7:30 – 8:30 PM",
+    coach: "Ashish",
+    activities: ["Bollywood"],
+  },
+  {
+    title: "Bollywood dance",
+    days: "Thursday",
+    time: "6:30 – 7:30 PM",
+    coach: "Ashish",
+    activities: ["Bollywood"],
+  },
+];
+export const navLinks = [
+  { label: "Home", href: "#home" },
+  { label: "The club", href: "#the-club" },
+  { label: "Programs", href: "#programs" },
+  { label: "Schedule", href: "#schedule" },
+  { label: "Our trainers", href: "#trainers" },
+  { label: "Member app", href: "#member-app" },
+  { label: "Reviews", href: "#reviews" },
+  { label: "FAQs", href: "#faqs" },
+  { label: "Visit us", href: "#visit" },
+];
+/** Group class timetable for the Madhu Vihar branch. DUMMY DATA: replace with the real timetable. */
+export const madhuViharSchedule: ClassSlot[] = [
+  {
+    title: "Morning group fitness",
+    days: "Mon – Sat",
+    time: "6:30 – 7:30 AM",
+    coach: "Manish Chaudhary",
+    activities: ["Aerobic exercise", "HIIT cardio", "Group fitness training"],
+  },
+  {
+    title: "Ladies batch",
+    days: "Mon – Sat",
+    time: "10:00 AM onwards",
+    coach: "Neeraj Saini",
+    activities: ["Aerobic exercise", "Strength training", "Stepper exercise"],
+  },
+  {
+    title: "Evening group fitness",
+    days: "Mon – Sat",
+    time: "6:00 – 7:00 PM",
+    coach: "Karan",
+    activities: ["HIIT cardio", "CrossFit", "Circuit training", "Full body workout"],
+  },
+  {
+    title: "Weekend Zumba",
+    days: "Sat & Sun",
+    time: "8:00 – 9:00 AM",
+    coach: "Neeraj Saini",
+    activities: ["Zumba", "Dance fitness", "Cardio"],
+  },
+];
+export const scheduleByBranch: Record<string, ClassSlot[]> = {
+  "laxmi-nagar": laxmiNagarSchedule,
+  "madhu-vihar": madhuViharSchedule,
 };
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
 export const programs = [
@@ -192,3 +309,14 @@ export const reviews: Review[] = [
     when: "6 years ago",
   },
 ];
+
+/** Madhu Vihar reviews. PLACEHOLDERS: replace with real Google reviews for that branch and remove `sample: true`. */
+export const madhuViharReviews: Review[] = [
+  { name: "Sample Reviewer 1", rating: 5, text: "Replace this with a real Google review from a Madhu Vihar member.", when: "a month ago", sample: true },
+  { name: "Sample Reviewer 2", rating: 5, text: "Replace this with a real Google review from a Madhu Vihar member.", when: "2 months ago", sample: true },
+  { name: "Sample Reviewer 3", rating: 5, text: "Replace this with a real Google review from a Madhu Vihar member.", when: "3 months ago", sample: true },
+];
+export const reviewsByBranch: Record<string, Review[]> = {
+  "laxmi-nagar": reviews,
+  "madhu-vihar": madhuViharReviews,
+};

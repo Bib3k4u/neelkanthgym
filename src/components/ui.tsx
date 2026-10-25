@@ -1,4 +1,5 @@
-import { ArrowUpRight, Dumbbell } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 
 export const wrap = "mx-auto w-full max-w-[1360px] px-5 sm:px-8 lg:px-10";
@@ -15,15 +16,21 @@ export function Brand() {
       aria-label="Neelkanth Gym home"
       className="inline-flex shrink-0 items-center gap-2.5 sm:gap-3"
     >
-      <span className="grid size-10 -rotate-6 place-items-center rounded-xl bg-accent text-ink shadow-[0_0_30px_#f6dc3c88] sm:size-12">
-        <Dumbbell className="size-6 rotate-6" strokeWidth={2.5} />
-      </span>
-      <span className="text-base font-extrabold tracking-tight sm:text-xl">
-        NEELKANTH
-        <span className="mt-0.5 block text-[11px] font-medium tracking-[0.24em] text-muted sm:text-xs">
-          GYM
-        </span>
-      </span>
+      <Image
+        src="/images/logo-dark-v6.png"
+        alt="Neelkanth Gym"
+        width={640}
+        height={226}
+        className="h-[4.25rem] w-auto sm:h-[5rem] [[data-theme=light]_&]:hidden"
+      />
+      <Image
+        src="/images/logo-light-v6.png"
+        alt=""
+        aria-hidden="true"
+        width={640}
+        height={226}
+        className="hidden h-[4.25rem] w-auto sm:h-[5rem] [[data-theme=light]_&]:block"
+      />
     </a>
   );
 }
