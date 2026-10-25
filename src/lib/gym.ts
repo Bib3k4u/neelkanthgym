@@ -158,6 +158,8 @@ export const scheduleByBranch: Record<string, ClassSlot[]> = {
   "laxmi-nagar": laxmiNagarSchedule,
   "madhu-vihar": madhuViharSchedule,
 };
+/** Developer credit shown in the footer. Set the Instagram profile URL, e.g. "https://instagram.com/yourhandle". */
+export const creditInstagram = "https://github.com/Bib3k4u";
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
 export const programs = [
   {
