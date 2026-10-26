@@ -468,7 +468,7 @@ export default function Home() {
           >
             <div className="reveal reveal-slide-l">
               <SectionLabel number="05">YOUR GYM. IN YOUR POCKET.</SectionLabel>
-              <span className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-extrabold tracking-[0.16em] text-ink">
+              <span className="mb-6 ml-2 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-extrabold tracking-[0.16em] text-ink">
                 <Rocket className="size-4" /> LAUNCHING SOON
               </span>
               <h2 className={heading}>
