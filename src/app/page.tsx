@@ -14,6 +14,7 @@ import {
   Target,
   UserRound,
   Utensils,
+  Rocket,
   Zap,
 } from "lucide-react";
 import { BranchMap, Header, MemberApp, Motion, Programs, ScheduleTabs, TrainerGrid } from "@/components/site-client";
@@ -237,7 +238,7 @@ export default function Home() {
             <div className="marquee font-heading text-2xl font-bold tracking-wide uppercase sm:text-3xl">
               {[0, 1].map((k) => (
                 <div className="flex shrink-0 items-center" key={k}>
-                  {["Weight training", "Personal training", "Group training", "Yoga & mobility", "Zumba", "Bollywood", "Hollywood", "Calisthenics", "Fitness"].map((t) => (
+                  {programs.map((p) => p.name).map((t) => (
                     <span key={t} className="flex items-center">
                       <span className="px-7">{t}</span>
                       <Zap className="size-5" fill="currentColor" />
@@ -467,6 +468,9 @@ export default function Home() {
           >
             <div className="reveal reveal-slide-l">
               <SectionLabel number="05">YOUR GYM. IN YOUR POCKET.</SectionLabel>
+              <span className="mb-6 ml-2 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-extrabold tracking-[0.16em] text-ink">
+                <Rocket className="size-4" /> LAUNCHING SOON
+              </span>
               <h2 className={heading}>
                 TRAIN SMARTER.
                 <br />
@@ -514,16 +518,16 @@ export default function Home() {
               </div>
               <Button
                 href={inquiry(
-                  "Hi Neelkanth Gym! I’d like to know more about the personalized member app and member access.",
+                  "Hi Neelkanth Gym! Please notify me when the personalized member app launches.",
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Explore member access
+                Get notified at launch
               </Button>
               <p className="mt-4 flex items-center gap-2 text-sm text-muted">
                 <ShieldCheck className="size-4" />
-                Made for Neelkanth members.
+                Launching soon, made for Neelkanth members.
               </p>
             </div>
             <div className="reveal reveal-slide-r">
