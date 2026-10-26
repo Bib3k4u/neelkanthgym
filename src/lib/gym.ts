@@ -159,7 +159,7 @@ export const scheduleByBranch: Record<string, ClassSlot[]> = {
   "madhu-vihar": madhuViharSchedule,
 };
 /** Developer credit shown in the footer. Set the Instagram profile URL, e.g. "https://instagram.com/yourhandle". */
-export const creditInstagram = "https://github.com/Bib3k4u";
+export const creditInstagram = "https://www.instagram.com/_zha_bibek_?psln=M21pdGpyOG9wMTd5&utm_source=qr";
 export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
 export const programs = [
   {
@@ -200,7 +200,28 @@ export const programs = [
     tag: "TURN THE ENERGY UP",
   },
   {
-    name: "Functional fitness",
+    name: "Bollywood",
+    category: "Energy",
+    icon: "sparkles",
+    description: "Dance to the beat of your favourite hits and burn calories without noticing.",
+    tag: "DANCE IT OUT",
+  },
+  {
+    name: "Hollywood",
+    category: "Energy",
+    icon: "clapperboard",
+    description: "Move to global chart-toppers in a high-energy, feel-good dance workout.",
+    tag: "STAR OF THE FLOOR",
+  },
+  {
+    name: "Calisthenics",
+    category: "Strength",
+    icon: "activity",
+    description: "Master your own bodyweight with pull-ups, push-ups, and skills that build real strength.",
+    tag: "BODYWEIGHT. NO LIMITS.",
+  },
+  {
+    name: "Fitness",
     category: "Balance",
     icon: "zap",
     description: "Move better in the gym, and feel the difference outside it.",
@@ -216,12 +237,12 @@ export const faqs = [
   {
     question: "What training programs do you offer?",
     answer:
-      "We offer weight training, personal training (PT), group training (GT), functional fitness, yoga, and Zumba. Message us for the current class schedule and availability.",
+      "We offer weight training, personal training (PT), group training (GT), yoga, Zumba, Bollywood, Hollywood, calisthenics, and fitness. Message us for the current class schedule and availability.",
   },
   {
     question: "What’s included in the member app?",
     answer:
-      "Our personalized member app helps you keep track of performance, workouts, meals, nutrition, and macros, so you can build consistency and see your progress. Ask the team how to get access with your membership.",
+      "Our personalized member app helps you keep track of performance, workouts, meals, nutrition, and macros, so you can build consistency and see your progress. The app is launching soon. Ask the team to notify you when it is ready.",
   },
   {
     question: "How much is a membership?",

@@ -10,8 +10,10 @@ import {
   ArrowRight,
   ArrowUpRight,
   BarChart3,
+  Activity,
   Check,
   ChevronRight,
+  Clapperboard,
   Dumbbell,
   Flame,
   Home,
@@ -20,6 +22,7 @@ import {
   Music2,
   Plus,
   Smartphone,
+  Sparkles,
   Sun,
   Target,
   Users,
@@ -302,6 +305,9 @@ const icons = {
   wind: Wind,
   music: Music2,
   zap: Zap,
+  sparkles: Sparkles,
+  clapperboard: Clapperboard,
+  activity: Activity,
 };
 const filters = ["All programs", "Strength", "Energy", "Balance"];
 export function Programs() {
@@ -895,12 +901,12 @@ export function TrainerGrid() {
           </button>
         </div>
       </div>
-      <div ref={scroller} key={branch.id} className="-mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2 [scrollbar-width:none] lg:gap-6 [&::-webkit-scrollbar]:hidden">
+      <div ref={scroller} key={branch.id} className="-mx-1 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-1 pb-2 [scrollbar-width:none] lg:gap-6 [&::-webkit-scrollbar]:hidden">
         {(loop ? [...trainers, ...trainers] : trainers).map(({ name, role, photo }, i) => {
           const index = i % count;
           return (
           <article
-            className="group w-full shrink-0 snap-start sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-1.125rem)]"
+            className="group w-full shrink-0 snap-start snap-always sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-1.125rem)]"
             key={`${name}-${i}`}
             aria-hidden={i >= count || undefined}
           >
