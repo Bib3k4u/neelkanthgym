@@ -3,14 +3,17 @@ import {
   ArrowDown,
   ArrowUpRight,
   BarChart3,
+  Clock,
   Dumbbell,
   Heart,
+  Moon,
   MapPin,
   MessageCircle,
   Phone,
   Plus,
   ShieldCheck,
   Sparkles,
+  Sunrise,
   Target,
   UserRound,
   Utensils,
@@ -30,6 +33,7 @@ import {
 } from "@/components/ui";
 import {
   faqs,
+  gymHours,
   inquiry,
   branches,
   phone,
@@ -62,6 +66,15 @@ const structuredData = {
       alternateName: "Neelkanth Gym",
       description: `Weight training, personal training, group training, yoga, Zumba and dance fitness at Neelkanth Gym, ${branch.name}, Delhi.`,
       telephone: phone,
+      openingHoursSpecification: [
+        { opens: "06:00", closes: "11:00" },
+        { opens: "11:00", closes: "12:30" },
+        { opens: "17:00", closes: "22:30" },
+      ].map((slot) => ({
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        ...slot,
+      })),
       ...(siteUrl ? { url: siteUrl, image: `${siteUrl}/opengraph-image` } : {}),
       founder: { "@type": "Person", name: "Rajat Kr Sharma" },
       address: {
@@ -310,6 +323,70 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="trainers" className={`${wrap} pt-2 pb-16 lg:pb-20`}>
+          <div className="reveal mb-10 flex flex-col justify-between gap-6 lg:mb-12 lg:flex-row lg:items-end">
+            <div>
+              <SectionLabel number="02">
+                THE PEOPLE BEHIND YOUR PROGRESS
+              </SectionLabel>
+              <h2 className={heading}>
+                YOUR EFFORT.
+                <br />
+                OUR <span className={`${serif} text-[0.85em]`}>expertise.</span>
+              </h2>
+            </div>
+            <p className="max-w-sm text-base leading-relaxed text-muted lg:text-lg">
+              Real guidance. The right encouragement.
+              <br />
+              Your team, rep after rep.
+            </p>
+          </div>
+          <div className="reveal reveal-scale glass mb-10 grid items-center gap-8 rounded-3xl p-5 sm:p-6 md:grid-cols-[280px_1fr] md:gap-10 lg:mb-14 lg:grid-cols-[340px_1fr] lg:p-8">
+            <div className="relative isolate aspect-[2/3] w-full overflow-hidden rounded-2xl border border-line bg-black/30">
+              {ownerPhoto ? (
+                <Image
+                  src={ownerPhoto}
+                  alt="Rajat Kr Sharma, owner of Neelkanth Gym"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 340px"
+                  className="object-cover object-top"
+                />
+              ) : (
+                <>
+                  <span
+                    className="absolute top-6 left-4 font-heading text-[220px] leading-none font-semibold text-foreground/5"
+                    aria-hidden="true"
+                  >
+                    R
+                  </span>
+                  <UserRound
+                    className="absolute inset-x-0 bottom-6 mx-auto size-52 text-foreground/25"
+                    strokeWidth={0.7}
+                    aria-hidden="true"
+                  />
+                  <span className="absolute bottom-4 left-4 text-xs text-muted">
+                    Owner photo coming soon
+                  </span>
+                </>
+              )}
+            </div>
+            <div>
+              <span className="inline-flex rounded-full bg-accent px-4 py-1.5 text-xs font-bold tracking-widest text-ink">
+                OWNER &amp; FOUNDER
+              </span>
+              <h3 className="mt-5 font-heading text-5xl leading-none font-semibold tracking-tight sm:text-6xl">
+                Rajat Kr Sharma
+              </h3>
+              <p className="mt-2 text-sm text-muted">Owner, Neelkanth Gym</p>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-foreground/80">
+                A neighbourhood gym with a simple purpose: give you the space,
+                the support, and the confidence to keep getting stronger.
+              </p>
+            </div>
+          </div>
+          <TrainerGrid />
+        </section>
+
         <section
           id="programs"
           className={`${sectionSpace} overflow-hidden border-y border-line bg-surface`}
@@ -317,7 +394,7 @@ export default function Home() {
           <div className={wrap}>
             <div className="reveal mb-10 flex flex-col justify-between gap-6 lg:mb-12 lg:flex-row lg:items-end">
               <div>
-                <SectionLabel number="02">FIND YOUR MOVEMENT</SectionLabel>
+                <SectionLabel number="03">FIND YOUR MOVEMENT</SectionLabel>
                 <h2 className={heading}>
                   YOUR GOALS.
                   <br />
@@ -340,7 +417,7 @@ export default function Home() {
         <section id="schedule" className={`${wrap} pt-2 pb-16 lg:pb-20`}>
           <div className="reveal mb-8 flex flex-col justify-between gap-5 lg:mb-10 lg:flex-row lg:items-end">
             <div>
-              <SectionLabel number="03">GROUP CLASSES · BOTH BRANCHES</SectionLabel>
+              <SectionLabel number="04">TIMINGS &amp; GROUP CLASSES</SectionLabel>
               <h2 className={heading}>
                 SHOW UP.
                 <br />
@@ -351,6 +428,46 @@ export default function Home() {
               <p className="text-base leading-relaxed text-muted lg:text-lg">
                 Weekly group fitness timetable. Pick your branch.
               </p>
+            </div>
+          </div>
+          <div className="reveal mb-10 overflow-hidden rounded-3xl border border-line bg-surface">
+            <div className="flex flex-col gap-3 border-b border-line px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+              <div className="flex items-center gap-3">
+                <span className="grid size-11 place-items-center rounded-full bg-accent text-ink">
+                  <Clock className="size-5" />
+                </span>
+                <div>
+                  <p className="text-xs font-bold tracking-[0.16em] text-accent-ink">GYM TIMINGS</p>
+                  <h3 className="font-heading text-2xl font-semibold tracking-tight uppercase sm:text-3xl">
+                    Open {gymHours.openDays}
+                  </h3>
+                </div>
+              </div>
+              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-semibold text-muted">
+                <span className="size-2 rounded-full bg-red-500" aria-hidden="true" />
+                {gymHours.closedDays} closed
+              </span>
+            </div>
+            <div className="grid divide-y divide-line md:grid-cols-3 md:divide-x md:divide-y-0">
+              {gymHours.sessions.map((session, i) => {
+                const Icon = session.women ? Sparkles : i === 0 ? Sunrise : Moon;
+                return (
+                  <div key={session.name} className={`p-6 sm:p-8 ${session.women ? "bg-accent/10" : ""}`}>
+                    <div className="flex items-center justify-between gap-3">
+                      <Icon className="size-6 text-accent-ink" strokeWidth={1.6} />
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${session.women ? "bg-accent text-ink" : "border border-line text-muted"}`}
+                      >
+                        {session.audience}
+                      </span>
+                    </div>
+                    <p className="mt-5 text-sm font-semibold text-muted">{session.name}</p>
+                    <p className="mt-1 font-heading text-3xl leading-tight font-semibold tracking-tight sm:text-4xl">
+                      {session.time}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <ScheduleTabs />
@@ -393,70 +510,6 @@ export default function Home() {
           <p className="mt-3 text-right text-sm text-muted">
             A glimpse of the atmosphere · AI-generated gym imagery
           </p>
-        </section>
-
-        <section id="trainers" className={`${wrap} pt-2 pb-16 lg:pb-20`}>
-          <div className="reveal mb-10 flex flex-col justify-between gap-6 lg:mb-12 lg:flex-row lg:items-end">
-            <div>
-              <SectionLabel number="04">
-                THE PEOPLE BEHIND YOUR PROGRESS
-              </SectionLabel>
-              <h2 className={heading}>
-                YOUR EFFORT.
-                <br />
-                OUR <span className={`${serif} text-[0.85em]`}>expertise.</span>
-              </h2>
-            </div>
-            <p className="max-w-sm text-base leading-relaxed text-muted lg:text-lg">
-              Real guidance. The right encouragement.
-              <br />
-              Your team, rep after rep.
-            </p>
-          </div>
-          <div className="reveal reveal-scale glass mb-10 grid items-center gap-8 rounded-3xl p-5 sm:p-6 md:grid-cols-[280px_1fr] md:gap-10 lg:mb-14 lg:grid-cols-[340px_1fr] lg:p-8">
-            <div className="relative isolate h-80 overflow-hidden rounded-2xl border border-line bg-black/30 md:h-[380px]">
-              {ownerPhoto ? (
-                <Image
-                  src={ownerPhoto}
-                  alt="Rajat Kr Sharma, owner of Neelkanth Gym"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 340px"
-                  className="object-cover"
-                />
-              ) : (
-                <>
-                  <span
-                    className="absolute top-6 left-4 font-heading text-[220px] leading-none font-semibold text-foreground/5"
-                    aria-hidden="true"
-                  >
-                    R
-                  </span>
-                  <UserRound
-                    className="absolute inset-x-0 bottom-6 mx-auto size-52 text-foreground/25"
-                    strokeWidth={0.7}
-                    aria-hidden="true"
-                  />
-                  <span className="absolute bottom-4 left-4 text-xs text-muted">
-                    Owner photo coming soon
-                  </span>
-                </>
-              )}
-            </div>
-            <div>
-              <span className="inline-flex rounded-full bg-accent px-4 py-1.5 text-xs font-bold tracking-widest text-ink">
-                OWNER &amp; FOUNDER
-              </span>
-              <h3 className="mt-5 font-heading text-5xl leading-none font-semibold tracking-tight sm:text-6xl">
-                Rajat Kr Sharma
-              </h3>
-              <p className="mt-2 text-sm text-muted">Owner, Neelkanth Gym</p>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-foreground/80">
-                A neighbourhood gym with a simple purpose: give you the space,
-                the support, and the confidence to keep getting stronger.
-              </p>
-            </div>
-          </div>
-          <TrainerGrid />
         </section>
 
         <section
@@ -662,7 +715,7 @@ export default function Home() {
                     {phone}
                   </a>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
-                    Call or WhatsApp for hours, plans, and a gym visit.
+                    Open Mon – Sat, closed Sundays. Call or WhatsApp for plans and a gym visit.
                   </p>
                 </div>
               </div>
