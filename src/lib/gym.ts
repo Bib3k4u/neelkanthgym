@@ -4,8 +4,14 @@ export const inquiry = (message: string) =>
   `${whatsapp}?text=${encodeURIComponent(message)}`;
 export const mapLink =
   "https://www.google.com/maps/place/Neelkanth+Gym/@28.6348889,77.2760903,17.27z/data=!4m6!3m5!1s0x390cfd0d26760729:0x84d7dc5a00e18e70!8m2!3d28.6349314!4d77.2762768!16s%2Fg%2F11g2vk2k_d";
-export const mapEmbed =
-  "https://maps.google.com/maps?q=Neelkanth+Gym+M+-+122%2C+Near+Jagat+Ram+Park%2C+Laxmi+Nagar%2C+New+Delhi%2C+Delhi+110092&z=17&output=embed";
+/** Embeds the branch's actual Google listing by its place ID (CID), which
+ *  reliably shows the pin and place card. Address-text or bare-coordinate
+ *  queries sometimes fail to resolve ("Place info couldn't load").
+ *  CID = the second half of the listing's hex ID (0x…:0x<this>) in decimal. */
+export const embedByCid = (cid: string, zoom = 17) =>
+  `https://maps.google.com/maps?cid=${cid}&z=${zoom}&output=embed`;
+
+export const mapEmbed = embedByCid("9572361812119228016");
 export const branches = [
   {
     id: "laxmi-nagar",
@@ -18,10 +24,8 @@ export const branches = [
     id: "madhu-vihar",
     name: "Madhu Vihar",
     address: "C-7, Sai Chowk, Madhu Vihar Rd, near FITNEST GYM, Madhu Vihar, I.P.Extension, Patparganj, Delhi, 110092",
-    mapLink:
-      "https://www.google.com/maps/search/?api=1&query=Neelkanth+Gym+C-7%2C+Sai+Chowk%2C+Madhu+Vihar+Rd%2C+near+FITNEST+GYM%2C+Madhu+Vihar%2C+I.P.Extension%2C+Patparganj%2C+Delhi%2C+110092",
-    mapEmbed:
-      "https://maps.google.com/maps?q=Neelkanth+Gym+C-7%2C+Sai+Chowk%2C+Madhu+Vihar+Rd%2C+near+FITNEST+GYM%2C+Madhu+Vihar%2C+I.P.Extension%2C+Patparganj%2C+Delhi%2C+110092&z=16&output=embed",
+    mapLink: "https://maps.app.goo.gl/Re6dqDRAd5Ws6ioo8",
+    mapEmbed: embedByCid("4650632725171498050"),
   },
 ];
 export type Trainer = { name: string; role?: string; photo?: string };
@@ -41,7 +45,10 @@ export const trainersByBranch: Record<string, Trainer[]> = {
     { name: "Karan" },
   ],
 };
+/** Which part of the day a class belongs to; the schedule groups by this. */
+export type ClassPeriod = "morning" | "ladies" | "evening";
 export type ClassSlot = {
+  period: ClassPeriod;
   title: string;
   days: string;
   time: string;
@@ -52,6 +59,7 @@ export type ClassSlot = {
 /** Group class timetable for the Laxmi Nagar branch. */
 export const laxmiNagarSchedule: ClassSlot[] = [
   {
+    period: "morning",
     title: "Morning group fitness",
     days: "Mon – Sat",
     time: "7:30 – 8:30 AM",
@@ -59,6 +67,7 @@ export const laxmiNagarSchedule: ClassSlot[] = [
     activities: ["Aerobic exercise", "HIIT cardio", "Group fitness training"],
   },
   {
+    period: "ladies",
     title: "Ladies special batch",
     days: "Mon – Sat",
     time: "11:00 AM onwards",
@@ -74,9 +83,34 @@ export const laxmiNagarSchedule: ClassSlot[] = [
     ],
   },
   {
+    period: "evening",
+    title: "Evening main batch",
+    days: "Mon – Sat",
+    time: "6:30 – 7:30 PM",
+    coach: "Sachin",
+    activities: ["Cardio", "Circuit training", "Yoga", "Aerobics", "Step aerobics", "Abdominal workout"],
+  },
+  {
+    period: "evening",
+    title: "Zumba",
+    days: "Mon & Fri",
+    time: "7:00 – 8:00 PM",
+    coach: "Anaya",
+    activities: ["Zumba", "Dance fitness", "Cardio"],
+  },
+  {
+    period: "evening",
+    title: "Bollywood dance",
+    days: "Tue & Thu",
+    time: "Tue 7:30 – 8:30 PM · Thu 6:30 – 7:30 PM",
+    coach: "Ashish",
+    activities: ["Bollywood"],
+  },
+  {
+    period: "evening",
     title: "Evening group fitness",
     days: "Mon – Sat",
-    time: "Evening",
+    time: "8:00 – 9:00 PM",
     coach: "Sam",
     note: "Tuesday off",
     activities: [
@@ -90,42 +124,33 @@ export const laxmiNagarSchedule: ClassSlot[] = [
       "Dumbbell & barbell group exercise",
     ],
   },
-  {
-    title: "Evening Zumba",
-    days: "Mon & Fri",
-    time: "7:00 – 8:00 PM",
-    coach: "Anaya",
-    activities: ["Zumba", "Dance fitness", "Cardio"],
-  },
-  {
-    title: "Bollywood dance",
-    days: "Tuesday",
-    time: "7:30 – 8:30 PM",
-    coach: "Ashish",
-    activities: ["Bollywood"],
-  },
-  {
-    title: "Bollywood dance",
-    days: "Thursday",
-    time: "6:30 – 7:30 PM",
-    coach: "Ashish",
-    activities: ["Bollywood"],
-  },
 ];
+/** Six items: each owns a run of sections, and the active tab follows the scroll.
+ *  About = the club + owner + trainers; Schedule = timings + classes;
+ *  Reviews = reviews + FAQs; Contact = branches, map and phone. */
 export const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "The club", href: "#the-club" },
+  { label: "About", href: "#the-club" },
   { label: "Programs", href: "#programs" },
   { label: "Schedule", href: "#schedule" },
-  { label: "Our trainers", href: "#trainers" },
   { label: "Member app", href: "#member-app" },
   { label: "Reviews", href: "#reviews" },
-  { label: "FAQs", href: "#faqs" },
-  { label: "Visit us", href: "#visit" },
+  { label: "Contact us", href: "#visit" },
 ];
+
+/** Opening hours, as given by the owner. Same for every branch unless noted. */
+export const gymHours = {
+  openDays: "Monday – Saturday",
+  closedDays: "Sunday",
+  sessions: [
+    { name: "Morning batch", time: "6:00 AM – 11:00 AM", audience: "Unisex", women: false },
+    { name: "Ladies special batch", time: "11:00 AM – 12:30 PM", audience: "Women only", women: true },
+    { name: "Evening batch", time: "5:00 PM – 10:30 PM", audience: "Unisex", women: false },
+  ],
+};
 /** Group class timetable for the Madhu Vihar branch. DUMMY DATA: replace with the real timetable. */
 export const madhuViharSchedule: ClassSlot[] = [
   {
+    period: "morning",
     title: "Morning group fitness",
     days: "Mon – Sat",
     time: "6:30 – 7:30 AM",
@@ -133,6 +158,7 @@ export const madhuViharSchedule: ClassSlot[] = [
     activities: ["Aerobic exercise", "HIIT cardio", "Group fitness training"],
   },
   {
+    period: "ladies",
     title: "Ladies batch",
     days: "Mon – Sat",
     time: "10:00 AM onwards",
@@ -140,6 +166,7 @@ export const madhuViharSchedule: ClassSlot[] = [
     activities: ["Aerobic exercise", "Strength training", "Stepper exercise"],
   },
   {
+    period: "evening",
     title: "Evening group fitness",
     days: "Mon – Sat",
     time: "6:00 – 7:00 PM",
@@ -147,6 +174,7 @@ export const madhuViharSchedule: ClassSlot[] = [
     activities: ["HIIT cardio", "CrossFit", "Circuit training", "Full body workout"],
   },
   {
+    period: "morning",
     title: "Weekend Zumba",
     days: "Sat & Sun",
     time: "8:00 – 9:00 AM",
@@ -252,7 +280,7 @@ export const faqs = [
   {
     question: "Where are you located, and when can I visit?",
     answer:
-      "We have two branches. Laxmi Nagar: M - 122, Near Jagat Ram Park, Laxmi Nagar, New Delhi, Delhi 110092. Madhu Vihar: C-7, Sai Chowk, Madhu Vihar Rd, near FITNEST GYM, Madhu Vihar, I.P. Extension, Patparganj, Delhi 110092. Call or WhatsApp +91 98106 42646 to confirm current opening hours and arrange your visit.",
+      "We have two branches. Laxmi Nagar: M - 122, Near Jagat Ram Park, Laxmi Nagar, New Delhi, Delhi 110092. Madhu Vihar: C-7, Sai Chowk, Madhu Vihar Rd, near FITNEST GYM, Madhu Vihar, I.P. Extension, Patparganj, Delhi 110092. We\u2019re open Monday to Saturday (closed on Sundays): 6:00 AM to 11:00 AM unisex, 11:00 AM to 12:30 PM a special ladies batch, and 5:00 PM to 10:30 PM unisex. Call or WhatsApp +91 98106 42646 to arrange your visit.",
   },
   {
     question: "Do you have more than one branch?",
@@ -262,7 +290,7 @@ export const faqs = [
 ];
 
 /** Owner portrait. Drop a photo in public/images (e.g. owner.webp) and set this to "/images/owner.webp". */
-export const ownerPhoto: string | null = null;
+export const ownerPhoto: string | null = "/images/owner.webp";
 
 /**
  * Google reviews shown in the testimonial carousel.

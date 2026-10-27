@@ -23,6 +23,7 @@ import {
   Plus,
   Smartphone,
   Sparkles,
+  Sunrise,
   Sun,
   Target,
   Users,
@@ -54,7 +55,7 @@ const getTheme = () => document.documentElement.dataset.theme || "dark";
 export function Header() {
   const theme = useSyncExternalStore(subscribeTheme, getTheme, () => "dark");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState("#home");
+  const [activeHref, setActiveHref] = useState("");
   const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -64,7 +65,7 @@ export function Header() {
       const marker =
         (headerRef.current?.getBoundingClientRect().height ?? 72) +
         Math.min(window.innerHeight * 0.2, 140);
-      let current = nav[0].href;
+      let current = "";
       for (const item of nav) {
         const section = document.getElementById(item.href.slice(1));
         if (section && section.getBoundingClientRect().top <= marker) {
@@ -984,6 +985,12 @@ export function TrainerGrid() {
   );
 }
 
+const periods = [
+  { key: "morning", label: "Morning", audience: "Unisex", icon: Sunrise, women: false },
+  { key: "ladies", label: "Ladies special batch", audience: "Women only", icon: Sparkles, women: true },
+  { key: "evening", label: "Evening", audience: "Unisex", icon: Moon, women: false },
+] as const;
+
 export function ScheduleTabs() {
   const [active, setActive] = useState(0);
   const branch = branches[active];
@@ -1003,33 +1010,50 @@ export function ScheduleTabs() {
           </button>
         ))}
       </div>
-      <div key={branch.id} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-        {slots.map((slot) => (
-          <article key={`${slot.title}-${slot.days}`} className="glass flex flex-col rounded-3xl p-6">
-            <div className="flex items-center justify-between gap-3 text-sm font-semibold">
-              <span className="inline-flex items-center gap-2 text-accent-ink">
-                <CalendarDays className="size-4" /> {slot.days}
-              </span>
-              <span className="inline-flex items-center gap-2 text-muted">
-                <Clock className="size-4" /> {slot.time}
-              </span>
-            </div>
-            <h3 className="mt-4 text-2xl font-semibold tracking-tight">{slot.title}</h3>
-            <p className="mt-1 text-sm text-muted">Coach: {slot.coach}</p>
-            {slot.note && (
-              <span className="mt-3 inline-flex w-fit rounded-full bg-accent px-3 py-1 text-xs font-bold text-ink">
-                {slot.note.toUpperCase()}
-              </span>
-            )}
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {slot.activities.map((a) => (
-                <li key={a} className="rounded-full border border-line px-3 py-1.5 text-xs font-medium text-foreground/85">
-                  {a}
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))}
+      <div key={branch.id} className="space-y-5">
+        {periods
+          .map((p) => ({ ...p, slots: slots.filter((slot) => slot.period === p.key) }))
+          .filter((group) => group.slots.length > 0)
+          .map(({ key, label, audience, icon: Icon, women, slots: group }) => (
+            <section key={key} className="overflow-hidden rounded-3xl border border-line bg-surface">
+              <div className={`flex items-center justify-between gap-3 px-6 py-4 sm:px-8 ${women ? "bg-accent/15" : ""}`}>
+                <h3 className="flex items-center gap-3 font-heading text-2xl font-semibold tracking-tight uppercase">
+                  <Icon className="size-6 text-accent-ink" strokeWidth={1.6} /> {label}
+                </h3>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-bold ${women ? "bg-accent text-ink" : "border border-line text-muted"}`}
+                >
+                  {audience}
+                </span>
+              </div>
+              <ul className="divide-y divide-line border-t border-line">
+                {group.map((slot) => (
+                  <li
+                    key={`${slot.title}-${slot.days}-${slot.time}`}
+                    className="grid gap-x-8 gap-y-2 px-6 py-5 sm:px-8 md:grid-cols-[minmax(0,230px)_minmax(0,1fr)]"
+                  >
+                    <div>
+                      <p className="font-heading text-2xl leading-tight font-semibold tracking-tight">{slot.time}</p>
+                      <p className="mt-1 flex flex-wrap items-center gap-2 text-sm font-semibold text-accent-ink">
+                        <CalendarDays className="size-4" /> {slot.days}
+                        {slot.note && (
+                          <span className="rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-bold text-ink">
+                            {slot.note.toUpperCase()}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold">
+                        {slot.title} <span className="font-medium text-muted">· {slot.coach}</span>
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-muted">{slot.activities.join(" · ")}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
       </div>
       <div className="mt-8 flex flex-wrap items-center gap-4">
         <Button
